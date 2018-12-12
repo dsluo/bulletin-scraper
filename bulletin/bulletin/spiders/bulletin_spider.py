@@ -15,6 +15,7 @@ class BulletinSpider(scrapy.Spider):
 
     def parse(self, response: Response):
         for subject in response.css('select#ddlAllPrefixes > option ::attr(value)').extract():
+            # Skip over "Select a Prefix" option.
             if subject == '-1':
                 continue
             yield scrapy.FormRequest(
@@ -29,8 +30,10 @@ class BulletinSpider(scrapy.Spider):
 
     def parse_subjects(self, response: Response):
         for course in response.css('select#ddlAllCourses > option ::attr(value)').extract():
+            # Skip over "Select a Course" option.
             if course == '-1':
                 continue
+            # Skip over options that aren't "All Courses". Could remove this to get more detailed information.
             if course != '0':
                 continue
             yield scrapy.FormRequest(
